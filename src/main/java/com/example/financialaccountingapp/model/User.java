@@ -44,6 +44,7 @@ public class User implements UserDetails {
             .setEnabled(userDTO.isEnabled())
             .setRole(userDTO.getRole())
             .setUsername(userDTO.getUsername())
+            .setPassword(userDTO.getPassword())
             .setFirstName(userDTO.getFirstName())
             .setLastName(userDTO.getLastName())
             .setCreatedAt(userDTO.getCreatedAt())
@@ -57,16 +58,16 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 }

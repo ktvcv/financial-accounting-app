@@ -8,6 +8,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Base64;
@@ -17,6 +18,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 
+@Component
 public class JWTService {
 
 
@@ -36,13 +38,13 @@ public class JWTService {
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(User userDetails) {
+    public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
     }
 
     public String generateToken(
         Map<String, Object> extraClaims,
-        User userDetails
+        UserDetails userDetails
     ) {
         Long expirationTimeInMillis = expirationInSeconds * 1000L;
         return buildToken(extraClaims, userDetails, expirationTimeInMillis);
@@ -50,7 +52,7 @@ public class JWTService {
 
     private String buildToken(
         Map<String, Object> extraClaims,
-        User userDetails,
+        UserDetails userDetails,
         long expiration
     ) {
         Date createdDate = new Date();
@@ -82,7 +84,7 @@ public class JWTService {
 
     private Claims extractAllClaims(String token) {
         return Jwts
-            .parser()
+            .parserBuilder()
             .setSigningKey(getSignInKey())
             .build()
             .parseClaimsJws(token)
@@ -92,5 +94,9 @@ public class JWTService {
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public int getExpirationSeconds(){
+        return expirationInSeconds;
     }
 }
